@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,7 +16,8 @@ model User {
   accounts   Account[]
   sessions   Session[]
 
-  created_at DateTime @default(now())
+  created_at    DateTime           @default(now())
+  timeIntervals UserTimeInterval[]
 
   @@map("users")
 }
@@ -50,4 +51,16 @@ model Session {
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+model UserTimeInterval {
+  id                    String @id @default(uuid())
+  week_day              Int
+  time_start_in_minutes Int
+  time_end_in_minutes   Int
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  @@map("user_time_intervals")
 }
